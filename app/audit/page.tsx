@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -42,7 +43,8 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function AuditPage() {
-  const [submitted, setSubmitted] = useState(false);
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formMethods = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -67,9 +69,25 @@ export default function AuditPage() {
   useFormPersist("spendlens-audit-form", formMethods);
 
 
-  const onSubmit = (data: FormData) => {
-    console.log("Audit data:", data);
-    setSubmitted(true);
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/audit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.auditId) {
+        router.push(`/audit/${json.auditId}`);
+      } else {
+        console.error("No auditId returned");
+        setIsSubmitting(false);
+      }
+    } catch (err) {
+      console.error(err);
+      setIsSubmitting(false);
+    }
   };
 
   const toolsList = [
@@ -91,16 +109,8 @@ export default function AuditPage() {
           <p className="text-zinc-500 mt-2 text-lg">Enter your current AI stack and spending to discover potential savings.</p>
         </div>
 
-        {submitted ? (
-          <Card className="bg-emerald-50 border-emerald-200">
-            <CardHeader>
-              <CardTitle className="text-emerald-800">Audit Submitted</CardTitle>
-              <CardDescription className="text-emerald-600">
-                Thank you! Our AI will analyze your spend and we'll reach out with personalized recommendations to save you money.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        ) : (
+        {/* Removed submitted success message as we redirect to results page now */}
+        {(
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             <Card>
               <CardHeader>
@@ -201,8 +211,8 @@ export default function AuditPage() {
             <Separator />
 
             <div className="flex justify-end">
-              <Button type="submit" size="lg" className="w-full md:w-auto">
-                Calculate Potential Savings
+              <Button type="submit" size="lg" className="w-full md:w-auto" disabled={isSubmitting}>
+                {isSubmitting ? "Analyzing..." : "Calculate Potential Savings"}
               </Button>
             </div>
           </form>
