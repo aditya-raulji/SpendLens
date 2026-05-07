@@ -105,7 +105,7 @@ export default function AuditResultPage() {
             {toolResults.map((t, i) => {
               const toolHasSavings = t.savingsPerMonth > 0;
               return (
-                <Card key={i} className={`overflow-hidden transition-all duration-300 hover:shadow-md animate-in fade-in slide-in-from-bottom-4`} style={{ animationDelay: \`\${200 + i * 100}ms\`, animationFillMode: 'both' }}>
+                <Card key={i} className={`overflow-hidden transition-all duration-300 hover:shadow-md animate-in fade-in slide-in-from-bottom-4`} style={{ animationDelay: `${200 + i * 100}ms`, animationFillMode: 'both' }}>
                   <CardHeader className={`pb-4 border-b ${toolHasSavings ? 'bg-emerald-50/50 border-emerald-100' : 'bg-zinc-50/50 border-zinc-100'}`}>
                     <div className="flex justify-between items-start gap-4">
                       <div>
