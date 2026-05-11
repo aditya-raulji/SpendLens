@@ -23,3 +23,9 @@ At 10,000 audits per day, the current client-heavy form architecture scales perf
 2. Implement edge caching via Vercel/Cloudflare for the landing page.
 3. Decouple lead ingestion using a message queue (like Upstash Kafka) to prevent Supabase connection exhaustion during spikes.
 4. Implement strict rate limiting using Upstash Redis to prevent abuse of the form submission endpoint.
+
+## Abuse Protection
+
+To ensure the integrity of the audit endpoint and prevent bot spam, we implemented two layers of protection:
+1. **Honeypot Field**: A visually hidden input field (`website`) is included in the audit form. Bots typically fill all inputs; if this field contains data during submission, the API silently rejects the request (returning a fake success) without writing to the database.
+2. **IP Rate Limiting**: The POST `/api/audit` endpoint implements a simple in-memory map to track submissions per IP address (`x-forwarded-for` header). Requests are limited to 10 per hour per IP. This is chosen as a lightweight, dependency-free solution suitable for V1, avoiding the overhead of Redis until significant traffic requires it.

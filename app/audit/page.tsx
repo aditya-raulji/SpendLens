@@ -26,6 +26,7 @@ const toolPlanOptions = {
 };
 
 const formSchema = z.object({
+  website: z.string().optional(),
   teamSize: z.number().min(1, "Team size must be at least 1"),
   primaryUseCase: z.enum(["coding", "writing", "data analysis", "research", "mixed"]),
   tools: z.object({
@@ -112,6 +113,12 @@ export default function AuditPage() {
         {/* Removed submitted success message as we redirect to results page now */}
         {(
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+            {/* Honeypot field for abuse protection */}
+            <div className="hidden" aria-hidden="true">
+              <Label htmlFor="website">Website</Label>
+              <Input id="website" type="text" {...register("website")} tabIndex={-1} autoComplete="off" />
+            </div>
+
             <Card>
               <CardHeader>
                 <CardTitle>Company Details</CardTitle>
