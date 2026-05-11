@@ -216,7 +216,7 @@ export function auditSpend(input: AuditInput): AuditResult {
       updated = true;
     }
 
-    let savingsPerMonth = Math.max(0, tool.spend - recommendedMonthlyCost);
+    const savingsPerMonth = Math.max(0, tool.spend - recommendedMonthlyCost);
 
     results.push({
       tool: toolName,

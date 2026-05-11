@@ -26,7 +26,7 @@ export default function AuditResultPage() {
         .then(data => {
           if (data.result) {
             setResult(data.result);
-            const topRecommendation = data.result.toolResults.find((t: any) => t.savingsPerMonth > 0)?.recommendation || "Maintain your current setup";
+            const topRecommendation = data.result.toolResults.find((t: { savingsPerMonth: number }) => t.savingsPerMonth > 0)?.recommendation || "Maintain your current setup";
             fetch("/api/audit/summarize", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -203,9 +203,9 @@ export default function AuditResultPage() {
         {totalMonthlySavings < 100 && (
           <Card className="bg-white border-zinc-200 shadow-md animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold">You're spending well on AI.</CardTitle>
+              <CardTitle className="text-2xl font-bold">You&apos;re spending well on AI.</CardTitle>
               <CardDescription className="text-base text-zinc-500 font-medium">
-                We'll notify you when better options exist for your stack. Enter your email to stay updated.
+                We&apos;ll notify you when better options exist for your stack. Enter your email to stay updated.
               </CardDescription>
             </CardHeader>
             <CardContent>

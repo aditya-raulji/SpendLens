@@ -44,7 +44,7 @@ export function LeadCaptureForm({ auditId }: LeadCaptureFormProps) {
         <CardHeader>
           <CardTitle className="text-emerald-800">Check your inbox</CardTitle>
           <CardDescription className="text-emerald-600">
-            We've sent a link to your audit results so you don't lose it.
+            We&apos;ve sent a link to your audit results so you don&apos;t lose it.
           </CardDescription>
         </CardHeader>
       </Card>

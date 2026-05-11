@@ -22,7 +22,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
     // Update Supabase if configured
     if (supabase) {
-      const { data: auditData, error: selectError } = await supabase
+      const { data: auditData } = await supabase
         .from('audits')
         .select('total_savings_monthly')
         .eq('id', id)

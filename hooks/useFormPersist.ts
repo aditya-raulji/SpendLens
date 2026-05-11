@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, FieldValues, Path, PathValue } from "react-hook-form";
 
-export function useFormPersist<T extends Record<string, any>>(
+export function useFormPersist<T extends FieldValues>(
   key: string,
   { watch, setValue }: UseFormReturn<T>
 ) {
@@ -12,14 +12,15 @@ export function useFormPersist<T extends Record<string, any>>(
     const saved = localStorage.getItem(key);
     if (saved) {
       try {
-        const parsed = JSON.parse(saved);
+        const parsed: Partial<T> = JSON.parse(saved);
         Object.entries(parsed).forEach(([k, v]) => {
-          setValue(k as any, v as any);
+          setValue(k as Path<T>, v as PathValue<T, Path<T>>);
         });
       } catch (err) {
         console.error("Failed to parse form data from localStorage", err);
       }
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsHydrated(true);
   }, [key, setValue]);
 
