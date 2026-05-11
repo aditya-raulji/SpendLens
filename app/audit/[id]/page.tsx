@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LeadCaptureForm } from "@/components/LeadCaptureForm";
 import { AuditResult } from "@/lib/auditEngine";
 
 export default function AuditResultPage() {
@@ -215,6 +216,8 @@ export default function AuditResultPage() {
             </CardContent>
           </Card>
         )}
+
+        <LeadCaptureForm auditId={id as string} />
 
       </div>
     </div>
