@@ -4,6 +4,8 @@
 
 SpendLens is a premium, open-source audit platform designed for startup founders and CTOs to identify redundancy and overspending in their AI tool stack. Built for the modern engineering team, it combines a powerful local-first logic engine with deep AI-driven analysis to provide actionable savings reports.
 
+![SpendLens Hero Interface](./public/hero_screenshot.png)
+
 [![Live Site](https://img.shields.io/badge/Live-Demo-emerald?style=for-the-badge)](https://spend-lens-seven.vercel.app/)
 [![CI Status](https://img.shields.io/github/actions/workflow/status/aditya-raulji/SpendLens/ci.yml?style=for-the-badge)](https://github.com/aditya-raulji/SpendLens/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
