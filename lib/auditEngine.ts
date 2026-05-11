@@ -120,31 +120,26 @@ export function auditSpend(input: AuditInput): AuditResult {
     const isTeamPlan = tool.plan.includes("Business") || tool.plan.includes("Team") || tool.plan.includes("Teams");
     if (isTeamPlan && tool.seats <= 2) {
       if (toolId === "cursor") {
-         recommendedPlan = "Pro ($20/user/mo)";
          recommendedMonthlyCost = 20 * tool.seats;
          recommendation = "Downgrade to Pro";
          reason = `Cursor Pro offers everything you need for <=2 seats, saving $${(40-20)*tool.seats}/mo.`;
          updated = true;
       } else if (toolId === "copilot") {
-         recommendedPlan = "Individual ($10/user/mo)";
          recommendedMonthlyCost = 10 * tool.seats;
          recommendation = "Downgrade to Individual";
          reason = `Individual plans are significantly cheaper for small teams of ${tool.seats}.`;
          updated = true;
       } else if (toolId === "chatgpt") {
-         recommendedPlan = "Plus ($20/mo)";
          recommendedMonthlyCost = 20 * tool.seats;
          recommendation = "Downgrade to Plus";
          reason = `For <=2 seats, individual Plus accounts are cheaper than Team.`;
          updated = true;
       } else if (toolId === "claude") {
-         recommendedPlan = "Pro ($20/mo)";
          recommendedMonthlyCost = 20 * tool.seats;
          recommendation = "Downgrade to Pro";
          reason = `For <=2 seats, individual Pro accounts are cheaper than Team.`;
          updated = true;
       } else if (toolId === "windsurf") {
-         recommendedPlan = "Pro ($15/user/mo)";
          recommendedMonthlyCost = 15 * tool.seats;
          recommendation = "Downgrade to Pro";
          reason = `Pro is cheaper and perfectly suited for a team size of ${tool.seats}.`;
@@ -154,19 +149,16 @@ export function auditSpend(input: AuditInput): AuditResult {
 
     if (tool.plan.includes("Enterprise") && teamSize <= 50 && !updated) {
       if (toolId === "cursor") {
-         recommendedPlan = "Business ($40/user/mo)";
          recommendedMonthlyCost = 40 * tool.seats;
          recommendation = "Downgrade to Business";
          reason = `Enterprise is typically overkill for <50 seats. Business provides strong features.`;
          updated = true;
       } else if (toolId === "copilot") {
-         recommendedPlan = "Business ($19/user/mo)";
          recommendedMonthlyCost = 19 * tool.seats;
          recommendation = "Downgrade to Business";
          reason = `Enterprise is overkill for <50 seats. Copilot Business is likely sufficient.`;
          updated = true;
       } else if (toolId === "chatgpt") {
-         recommendedPlan = "Team ($25/user/mo)";
          recommendedMonthlyCost = 25 * tool.seats;
          recommendation = "Downgrade to Team";
          reason = `Enterprise requires a huge commitment. Team plan is better for <50 seats.`;
