@@ -30,6 +30,9 @@ export type ToolResult = {
 };
 
 export type AuditResult = {
+  teamSize: number;
+  useCase: string;
+  totalCurrentSpend: number;
   toolResults: ToolResult[];
   totalMonthlySavings: number;
   totalAnnualSavings: number;
@@ -233,6 +236,9 @@ export function auditSpend(input: AuditInput): AuditResult {
   const credexThreshold = totalMonthlySavings > 500 || (totalCurrentSpend > 500 && teamSize < 5);
 
   return {
+    teamSize,
+    useCase: primaryUseCase,
+    totalCurrentSpend,
     toolResults: results,
     totalMonthlySavings,
     totalAnnualSavings,

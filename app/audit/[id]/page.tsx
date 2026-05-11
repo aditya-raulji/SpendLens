@@ -13,7 +13,9 @@ export default function AuditResultPage() {
   const params = useParams();
   const id = params?.id as string | undefined;
   const [result, setResult] = useState<AuditResult | null>(null);
+  const [summary, setSummary] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingSummary, setLoadingSummary] = useState(true);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -21,7 +23,29 @@ export default function AuditResultPage() {
       fetch(`/api/audit/${id}`)
         .then(res => res.json())
         .then(data => {
-          if (data.result) setResult(data.result);
+          if (data.result) {
+            setResult(data.result);
+            const topRecommendation = data.result.toolResults.find((t: any) => t.savingsPerMonth > 0)?.recommendation || "Maintain your current setup";
+            fetch("/api/audit/summarize", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                teamSize: data.result.teamSize,
+                useCase: data.result.useCase,
+                totalMonthly: data.result.totalCurrentSpend,
+                totalSavings: data.result.totalMonthlySavings,
+                totalAnnualSavings: data.result.totalAnnualSavings,
+                topRecommendation: topRecommendation,
+                numTools: data.result.toolResults.length
+              })
+            })
+            .then(res => res.json())
+            .then(sumData => {
+              if (sumData.summary) setSummary(sumData.summary);
+              setLoadingSummary(false);
+            })
+            .catch(() => setLoadingSummary(false));
+          }
           setLoading(false);
         })
         .catch(err => {
@@ -92,9 +116,17 @@ export default function AuditResultPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-             <Skeleton className="h-4 w-full bg-blue-100/50" />
-             <Skeleton className="h-4 w-[90%] bg-blue-100/50" />
-             <Skeleton className="h-4 w-[80%] bg-blue-100/50" />
+             {loadingSummary ? (
+               <>
+                 <Skeleton className="h-4 w-full bg-blue-100/50" />
+                 <Skeleton className="h-4 w-[90%] bg-blue-100/50" />
+                 <Skeleton className="h-4 w-[80%] bg-blue-100/50" />
+               </>
+             ) : (
+               <p className="text-blue-900 leading-relaxed text-sm md:text-base font-medium">
+                 {summary}
+               </p>
+             )}
           </CardContent>
         </Card>
 
