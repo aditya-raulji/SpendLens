@@ -88,7 +88,7 @@ export function LeadCaptureForm({ auditId }: LeadCaptureFormProps) {
             
             <div className="space-y-2">
               <Label htmlFor="role">Your Role</Label>
-              <Select value={role} onValueChange={setRole}>
+              <Select value={role} onValueChange={(val) => setRole(val || "")}>
                 <SelectTrigger id="role" className="bg-zinc-50">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
