@@ -2,7 +2,7 @@
 
 SpendLens is a free AI spend audit tool for startup founders to uncover hidden savings. Enter your team's tool stack to get a personalized breakdown of where you're overpaying and how to optimize.
 
-[Live Demo](https://spendlens.placeholder.com)
+[Live Demo](https://spend-lens.vercel.app)
 
 ## Quick Start
 1. `npm install`
