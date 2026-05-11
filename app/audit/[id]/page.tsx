@@ -219,6 +219,12 @@ export default function AuditResultPage() {
 
         <LeadCaptureForm auditId={id as string} />
 
+        <div className="text-center pt-8 pb-4">
+          <Button variant="link" onClick={() => window.location.href = '/audit'} className="text-zinc-500 hover:text-zinc-900 font-medium">
+            Start your own audit &rarr;
+          </Button>
+        </div>
+
       </div>
     </div>
   );
