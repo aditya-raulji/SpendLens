@@ -13,6 +13,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { Navbar } from "@/components/Navbar";
+import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
 
 const toolPlanOptions = {
   cursor: ["Hobby ($0)", "Pro ($20/user/mo)", "Business ($40/user/mo)", "Enterprise (custom)", "None"],
@@ -70,7 +72,6 @@ export default function AuditPage() {
 
   useFormPersist("spendlens-audit-form", formMethods);
 
-
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     setErrorMsg(null);
@@ -84,13 +85,11 @@ export default function AuditPage() {
       if (json.auditId) {
         router.push(`/audit/${json.auditId}`);
       } else {
-        console.error("No auditId returned", json);
-        setErrorMsg(json.error || "System error: Could not save the audit. Check backend logs.");
+        setErrorMsg(json.error || "Submission failed. Please try again.");
         setIsSubmitting(false);
       }
     } catch (err) {
-      console.error(err);
-      setErrorMsg("Failed to connect to the server.");
+      setErrorMsg("Connection failed. Please check your internet.");
       setIsSubmitting(false);
     }
   };
@@ -98,138 +97,177 @@ export default function AuditPage() {
   const toolsList = [
     { id: "cursor", name: "Cursor" },
     { id: "copilot", name: "GitHub Copilot" },
-    { id: "claude", name: "Claude (Anthropic)" },
-    { id: "chatgpt", name: "ChatGPT (OpenAI)" },
-    { id: "anthropicApi", name: "Anthropic API Direct" },
-    { id: "openaiApi", name: "OpenAI API Direct" },
+    { id: "claude", name: "Claude" },
+    { id: "chatgpt", name: "ChatGPT" },
+    { id: "anthropicApi", name: "Anthropic API" },
+    { id: "openaiApi", name: "OpenAI API" },
     { id: "gemini", name: "Gemini" },
     { id: "windsurf", name: "Windsurf" },
   ] as const;
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12 text-zinc-900 dark:text-zinc-50 transition-colors duration-300">
-      <div className="max-w-4xl mx-auto space-y-8">
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight">AI Spend Audit</h1>
-          <p className="text-zinc-500 mt-2 text-lg">Enter your current AI stack and spending to discover potential savings.</p>
+    <div className="min-h-screen bg-beige-100 dark:bg-zinc-950 selection:bg-gold/30">
+      <Navbar />
+      
+      <main className="max-w-4xl mx-auto pt-32 pb-20 px-6 space-y-12">
+        <div className="text-center space-y-4">
+          <h1 className="text-5xl md:text-6xl font-heading italic text-olive-950 dark:text-olive-100 leading-tight">
+            Audit Your <span className="not-italic font-normal text-charcoal dark:text-white">Intelligence Stack</span>
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            Precisely map your AI tool spending. Every field you fill brings you closer to clinical efficiency.
+          </p>
         </div>
 
-        {/* Removed submitted success message as we redirect to results page now */}
-        {(
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Honeypot field for abuse protection */}
-            <div className="hidden" aria-hidden="true">
-              <Label htmlFor="website">Website</Label>
-              <Input id="website" type="text" {...register("website")} tabIndex={-1} autoComplete="off" />
-            </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+          <div className="hidden" aria-hidden="true">
+            <Label htmlFor="website">Website</Label>
+            <Input id="website" type="text" {...register("website")} tabIndex={-1} autoComplete="off" />
+          </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Company Details</CardTitle>
-                <CardDescription>Tell us a bit about your team size and use cases.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="teamSize">Team Size</Label>
-                    <Input id="teamSize" type="number" {...register("teamSize", { valueAsNumber: true })} />
-                    {errors.teamSize && <p className="text-red-500 text-sm">{errors.teamSize.message}</p>}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="primaryUseCase">Primary Use Case</Label>
-                    <Controller
-                      control={control}
-                      name="primaryUseCase"
-                      render={({ field }) => (
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select use case" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="coding">Coding</SelectItem>
-                            <SelectItem value="writing">Writing</SelectItem>
-                            <SelectItem value="data analysis">Data Analysis</SelectItem>
-                            <SelectItem value="research">Research</SelectItem>
-                            <SelectItem value="mixed">Mixed</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      )}
-                    />
-                  </div>
+          {/* COMPANY DETAILS */}
+          <Card className="glass-matte border-none shadow-2xl rounded-[2rem] overflow-hidden">
+            <CardHeader className="p-8 pb-0">
+              <CardTitle className="font-heading italic text-3xl text-olive-900 dark:text-olive-100">Contextual Baseline</CardTitle>
+              <CardDescription className="text-muted-foreground text-sm font-medium">The foundation of your audit.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-8 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <Label htmlFor="teamSize" className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">Active Team Members</Label>
+                  <Input 
+                    id="teamSize" 
+                    type="number" 
+                    {...register("teamSize", { valueAsNumber: true })} 
+                    className="h-14 bg-white/50 dark:bg-black/20 border-none rounded-2xl text-lg font-medium focus-visible:ring-gold"
+                  />
+                  {errors.teamSize && <p className="text-red-500 text-xs font-semibold">{errors.teamSize.message}</p>}
                 </div>
-              </CardContent>
-            </Card>
+                
+                <div className="space-y-3">
+                  <Label htmlFor="primaryUseCase" className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">Primary Intelligence Need</Label>
+                  <Controller
+                    control={control}
+                    name="primaryUseCase"
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger className="h-14 bg-white/50 dark:bg-black/20 border-none rounded-2xl text-lg font-medium focus:ring-gold">
+                          <SelectValue placeholder="Select usage profile" />
+                        </SelectTrigger>
+                        <SelectContent className="glass-matte border-none rounded-2xl">
+                          <SelectItem value="coding" className="py-3">Software Development</SelectItem>
+                          <SelectItem value="writing" className="py-3">Creative Writing</SelectItem>
+                          <SelectItem value="data analysis" className="py-3">Data Intelligence</SelectItem>
+                          <SelectItem value="research" className="py-3">Academic Research</SelectItem>
+                          <SelectItem value="mixed" className="py-3">General Utility</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-            <div className="space-y-6">
-              <h2 className="text-2xl font-semibold tracking-tight mt-8">Tool Breakdown</h2>
-              
-              {toolsList.map((tool) => (
-                <Card key={tool.id}>
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl">{tool.name}</CardTitle>
-                      <Badge variant="outline" className="bg-white">Tool</Badge>
+          <Separator className="bg-border/30 max-w-[200px] mx-auto" />
+
+          {/* TOOLS GRID */}
+          <div className="space-y-8">
+            <div className="flex items-center gap-4">
+              <h2 className="text-3xl font-heading italic text-olive-950 dark:text-olive-100">Tool Infrastructure</h2>
+              <Separator className="flex-1 bg-border/30" />
+            </div>
+            
+            {toolsList.map((tool, idx) => (
+              <Card key={tool.id} className="glass-matte border-none shadow-xl rounded-[2.5rem] overflow-hidden group animate-in fade-in slide-in-from-bottom-8 duration-700" style={{ animationDelay: `${idx * 100}ms` }}>
+                <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between">
+                  <div className="space-y-1">
+                    <CardTitle className="text-2xl font-heading italic text-olive-900 dark:text-olive-100 transition-colors group-hover:text-gold">{tool.name}</CardTitle>
+                    <CardDescription className="text-xs uppercase tracking-tighter text-muted-foreground font-bold">Tool #{idx + 1}</CardDescription>
+                  </div>
+                  <div className="h-10 w-10 bg-white/50 dark:bg-white/10 rounded-full flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-gold/60" />
+                  </div>
+                </CardHeader>
+                <CardContent className="p-8 pt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="space-y-3">
+                      <Label className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground opacity-60">Current Subscription</Label>
+                      <Controller
+                        control={control}
+                        name={`tools.${tool.id}.plan` as const}
+                        render={({ field }) => (
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger className="h-12 bg-white/40 dark:bg-black/20 border-none rounded-xl font-medium focus:ring-gold/40">
+                              <SelectValue placeholder="Select tier" />
+                            </SelectTrigger>
+                            <SelectContent className="glass-matte border-none rounded-xl">
+                              {toolPlanOptions[tool.id as keyof typeof toolPlanOptions].map((plan) => (
+                                <SelectItem key={plan} value={plan} className="py-2.5">{plan}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="space-y-2">
-                        <Label>Plan Selected</Label>
-                        <Controller
-                          control={control}
-                          name={`tools.${tool.id}.plan` as const}
-                          render={({ field }) => (
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select plan" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {toolPlanOptions[tool.id as keyof typeof toolPlanOptions].map((plan) => (
-                                  <SelectItem key={plan} value={plan}>{plan}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          )}
-                        />
-                      </div>
-                      
-                      {/* For API Direct tools, we only need spend, but we'll include seats as disabled or hidden. I'll just show both but we can ignore seats for API */}
-                      <div className="space-y-2">
-                        <Label>Monthly Spend ($)</Label>
+                    
+                    <div className="space-y-3">
+                      <Label className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground opacity-60">Monthly Spend ($)</Label>
+                      <Input 
+                        type="number" 
+                        step="0.01"
+                        {...register(`tools.${tool.id}.spend` as const, { valueAsNumber: true })} 
+                        className="h-12 bg-white/40 dark:bg-black/20 border-none rounded-xl font-medium focus-visible:ring-gold/40"
+                      />
+                    </div>
+                    
+                    {tool.id !== "anthropicApi" && tool.id !== "openaiApi" && (
+                      <div className="space-y-3">
+                        <Label className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground opacity-60">Allocated Seats</Label>
                         <Input 
                           type="number" 
-                          step="0.01"
-                          {...register(`tools.${tool.id}.spend` as const, { valueAsNumber: true })} 
+                          {...register(`tools.${tool.id}.seats` as const, { valueAsNumber: true })} 
+                          className="h-12 bg-white/40 dark:bg-black/20 border-none rounded-xl font-medium focus-visible:ring-gold/40"
                         />
                       </div>
-                      
-                      {tool.id !== "anthropicApi" && tool.id !== "openaiApi" && (
-                        <div className="space-y-2">
-                          <Label>Number of Seats</Label>
-                          <Input 
-                            type="number" 
-                            {...register(`tools.${tool.id}.seats` as const, { valueAsNumber: true })} 
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-            <Separator />
+          <div className="pt-10 flex flex-col items-center gap-6">
+            {errorMsg && (
+              <div className="px-6 py-3 rounded-full bg-red-50 text-red-600 text-sm font-semibold animate-bounce">
+                {errorMsg}
+              </div>
+            )}
+            <Button 
+              type="submit" 
+              disabled={isSubmitting} 
+              className="h-20 px-16 rounded-full bg-charcoal dark:bg-white dark:text-charcoal text-white text-2xl font-heading italic shadow-2xl shadow-charcoal/20 transition-all hover:px-24 active:scale-95 disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <span className="flex items-center gap-3">
+                  <Loader2 className="animate-spin w-6 h-6" />
+                  Generating Audit...
+                </span>
+              ) : (
+                <span className="flex items-center gap-3">
+                  Calculate Savings
+                  <ArrowRight className="w-6 h-6" />
+                </span>
+              )}
+            </Button>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Takes approx. 180ms to process</p>
+          </div>
+        </form>
+      </main>
 
-                <div className="pt-6 border-t flex flex-col items-start gap-4">
-                  {errorMsg && <p className="text-red-500 font-medium text-sm">{errorMsg}</p>}
-                  <Button type="submit" size="lg" disabled={isSubmitting} className="w-full sm:w-auto text-lg py-6 shadow-xl">
-                {isSubmitting ? "Analyzing..." : "Calculate Potential Savings"}
-              </Button>
-            </div>
-          </form>
-        )}
-      </div>
+      <footer className="py-12 border-t border-border/20 text-center text-muted-foreground text-xs font-semibold tracking-widest uppercase">
+        Strictly Confidential Intelligence Audit
+      </footer>
     </div>
   );
 }
