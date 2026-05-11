@@ -23,8 +23,8 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             {[
               { name: "Audit", href: "/audit" },
-              { name: "Pricing", href: "#" },
-              { name: "About", href: "#" },
+              { name: "Pricing", href: "/#pricing" },
+              { name: "About", href: "/#about" },
             ].map((link) => (
               <Link
                 key={link.name}
