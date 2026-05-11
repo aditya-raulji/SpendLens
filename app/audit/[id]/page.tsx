@@ -58,17 +58,17 @@ export default function AuditResultPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-50 p-6 md:p-12 flex items-center justify-center">
-        <p className="text-zinc-500 animate-pulse text-lg">Analyzing your AI spend...</p>
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12 flex items-center justify-center">
+        <p className="text-zinc-500 dark:text-zinc-400 animate-pulse text-lg">Analyzing your AI spend...</p>
       </div>
     );
   }
 
   if (!result) {
     return (
-      <div className="min-h-screen bg-zinc-50 p-6 md:p-12 flex items-center justify-center">
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <p className="text-zinc-500 text-lg">Audit not found or expired.</p>
+          <p className="text-zinc-500 dark:text-zinc-400 text-lg">Audit not found or expired.</p>
           <Button onClick={() => window.location.href = '/audit'}>Start New Audit</Button>
         </div>
       </div>
@@ -85,7 +85,7 @@ export default function AuditResultPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 p-6 md:p-12 text-zinc-900">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12 text-zinc-900 dark:text-zinc-50 transition-colors duration-300">
       <div className="max-w-4xl mx-auto space-y-10">
         
         {/* TOP HERO */}
@@ -139,18 +139,18 @@ export default function AuditResultPage() {
               const toolHasSavings = t.savingsPerMonth > 0;
               return (
                 <Card key={i} className={`overflow-hidden transition-all duration-300 hover:shadow-md animate-in fade-in slide-in-from-bottom-4`} style={{ animationDelay: `${200 + i * 100}ms`, animationFillMode: 'both' }}>
-                  <CardHeader className={`pb-4 border-b ${toolHasSavings ? 'bg-emerald-50/50 border-emerald-100' : 'bg-zinc-50/50 border-zinc-100'}`}>
+                  <CardHeader className={`pb-4 border-b ${toolHasSavings ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900' : 'bg-zinc-50/50 dark:bg-zinc-900/50 border-zinc-100 dark:border-zinc-800'}`}>
                     <div className="flex justify-between items-start gap-4">
                       <div>
-                        <CardTitle className="text-xl font-bold text-zinc-900">{t.tool}</CardTitle>
+                        <CardTitle className="text-xl font-bold text-foreground">{t.tool}</CardTitle>
                         <CardDescription className="mt-1.5 flex items-center gap-2 text-sm font-medium">
                           {toolHasSavings ? (
                             <>
                               <span className="line-through text-zinc-400 decoration-zinc-300">${t.currentMonthlyCost}/mo</span>
-                              <span className="text-zinc-900 bg-zinc-200/50 px-1.5 py-0.5 rounded">${t.recommendedMonthlyCost}/mo</span>
+                              <span className="text-zinc-900 dark:text-zinc-50 bg-zinc-200/50 dark:bg-zinc-800/50 px-1.5 py-0.5 rounded">${t.recommendedMonthlyCost}/mo</span>
                             </>
                           ) : (
-                            <span className="text-zinc-700">${t.currentMonthlyCost}/mo</span>
+                            <span className="text-zinc-700 dark:text-zinc-300">${t.currentMonthlyCost}/mo</span>
                           )}
                         </CardDescription>
                       </div>
@@ -161,11 +161,11 @@ export default function AuditResultPage() {
                   </CardHeader>
                   <CardContent className="pt-5">
                     <div className="space-y-4">
-                      <div className="bg-white p-3.5 rounded-lg border border-zinc-100 shadow-sm">
+                      <div className="bg-white dark:bg-zinc-950 p-3.5 rounded-lg border border-zinc-100 dark:border-zinc-800 shadow-sm">
                         <span className="text-zinc-400 uppercase tracking-wider font-semibold block text-[10px] mb-1.5">Recommended Action</span>
-                        <span className="font-semibold text-zinc-800">{t.recommendation}</span>
+                        <span className="font-semibold text-zinc-800 dark:text-zinc-100">{t.recommendation}</span>
                       </div>
-                      <p className="text-sm text-zinc-600 leading-relaxed font-medium">
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">
                         {t.reason}
                       </p>
                     </div>

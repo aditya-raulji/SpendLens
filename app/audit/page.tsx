@@ -107,7 +107,7 @@ export default function AuditPage() {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-zinc-50 p-6 md:p-12 text-zinc-900">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-6 md:p-12 text-zinc-900 dark:text-zinc-50 transition-colors duration-300">
       <div className="max-w-4xl mx-auto space-y-8">
         <div>
           <h1 className="text-4xl font-bold tracking-tight">AI Spend Audit</h1>
