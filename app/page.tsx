@@ -9,7 +9,7 @@ export default function Home() {
           Stop Overpaying for AI Tools
         </h1>
         
-        <p className="text-xl md:text-2xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-xl md:text-2xl text-zinc-300 max-w-2xl mx-auto leading-relaxed">
           Discover exactly how much your team spends on AI and uncover hidden savings in minutes. The ultimate audit for modern engineering teams.
         </p>
 
@@ -22,8 +22,8 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="absolute bottom-8 text-zinc-600 text-sm font-medium">
-        Powered by <span className="text-zinc-400">Credex</span> — Discounted AI Credits
+      <footer className="absolute bottom-8 text-zinc-400 text-sm font-medium">
+        Powered by <span className="text-zinc-300">Credex</span> — Discounted AI Credits
       </footer>
     </div>
   );
