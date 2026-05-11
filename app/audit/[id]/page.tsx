@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LeadCaptureForm } from "@/components/LeadCaptureForm";
 import { Navbar } from "@/components/Navbar";
-import { ArrowLeft, Share2, Check, Sparkles, TrendingDown, Clock, ShieldCheck } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Share2, Check, TrendingDown, Clock, ShieldCheck } from "lucide-react";
 
 interface AuditResult {
   toolResults: Array<{
@@ -89,7 +90,6 @@ export default function AuditResultsPage() {
 
   const totalMonthlySavings = result.totalMonthlySavings;
   const totalAnnualSavings = totalMonthlySavings * 12;
-  const credexThreshold = result.credexThreshold;
 
   return (
     <div className="min-h-screen bg-beige-100 dark:bg-zinc-950 selection:bg-gold/30 pb-20">

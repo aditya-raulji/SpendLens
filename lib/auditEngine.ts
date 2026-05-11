@@ -86,7 +86,7 @@ export function auditSpend(input: AuditInput): AuditResult {
   const results: ToolResult[] = [];
   let totalCurrentSpend = 0;
   
-  for (const [_, tool] of Object.entries(input.tools)) {
+  for (const tool of Object.values(input.tools)) {
     if (tool.plan !== "None") {
       totalCurrentSpend += tool.spend;
     }
@@ -98,7 +98,6 @@ export function auditSpend(input: AuditInput): AuditResult {
     if (tool.plan === "None") continue;
 
     const toolName = toolNames[toolId] || toolId;
-    let recommendedPlan = tool.plan;
     let recommendedMonthlyCost = tool.spend;
     let recommendation = "Already optimal";
     let reason = "Your current plan fits your usage well.";

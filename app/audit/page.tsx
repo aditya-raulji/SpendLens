@@ -12,7 +12,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import { Navbar } from "@/components/Navbar";
 import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
 
@@ -88,7 +87,7 @@ export default function AuditPage() {
         setErrorMsg(json.error || "Submission failed. Please try again.");
         setIsSubmitting(false);
       }
-    } catch (err) {
+    } catch (_) {
       setErrorMsg("Connection failed. Please check your internet.");
       setIsSubmitting(false);
     }

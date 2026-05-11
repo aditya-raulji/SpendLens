@@ -93,7 +93,7 @@ export default function LandingPage() {
                   <BarChart3 className="text-gold w-7 h-7" />
                 </div>
                 <h3 className="text-2xl font-heading italic text-olive-950 dark:text-olive-100">Actionable Savings</h3>
-                <p className="text-muted-foreground leading-relaxed">Don't just see the waste—get specific downgrade and consolidation recommendations.</p>
+                <p className="text-muted-foreground leading-relaxed">Don&apos;t just see the waste—get specific downgrade and consolidation recommendations.</p>
               </div>
             </div>
           </div>
