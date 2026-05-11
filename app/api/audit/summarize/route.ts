@@ -1,49 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
+import Anthropic from '@anthropic-ai/sdk';
 
 export async function POST(req: NextRequest) {
-  const auditResult = await req.json();
+  const data = await req.json();
+  
+  const { teamSize, useCase, totalMonthly, totalSavings, totalAnnualSavings, topRecommendation, numTools } = data;
 
-  const prompt = `You are a financial advisor specializing in AI tool costs 
-for tech startups. Write a 90-100 word personalized audit summary.
+  const systemPrompt = "You are a financial advisor specializing in AI tool costs for tech startups. Be direct, specific, and empathetic. Use plain English. Never use bullet points in your summary.";
 
-Team size: ${auditResult.teamSize}
-Use case: ${auditResult.useCase}  
-Current monthly AI spend: $${auditResult.totalMonthly}
-Potential monthly savings: $${auditResult.totalSavings}
-Top recommendation: ${auditResult.topRecommendation}
-
-Write directly to the founder. Start with their situation, 
-explain the biggest savings opportunity, end with a clear next step. 
-Plain English only. No bullet points.`;
+  const userPrompt = `Write a 90-100 word personalized audit summary for this startup. They have a team of ${teamSize} focused on ${useCase}. They currently spend $${totalMonthly}/month on AI tools. The audit found they could save $${totalSavings}/month by: ${topRecommendation}. 
+Write directly to the founder. Start with their situation, explain the biggest opportunity, and end with a clear next step. Do not use bullet points.`;
 
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: {
-            maxOutputTokens: 200,
-            temperature: 0.7,
-          }
-        })
-      }
-    );
+    const anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY || "",
+    });
 
-    if (!response.ok) throw new Error('Gemini API failed');
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 300,
+      system: systemPrompt,
+      messages: [
+        { role: 'user', content: userPrompt }
+      ]
+    });
 
-    const data = await response.json();
-    const summary = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
+    const summary = response.content[0].type === 'text' ? response.content[0].text : '';
+    
     if (!summary) throw new Error('No summary returned');
 
     return NextResponse.json({ summary });
 
   } catch (error) {
+    console.error("Anthropic API Error:", error);
     // Graceful fallback — no crash, no error shown to user
-    const fallback = `Your team of ${auditResult.teamSize} is spending $${auditResult.totalMonthly}/month on AI tools. Our audit found ${auditResult.numTools} tools in use, with a potential saving of $${auditResult.totalSavings}/month ($${auditResult.totalSavings * 12}/year). The biggest opportunity is ${auditResult.topRecommendation}. Review the breakdown below to start saving.`;
+    const fallback = `Your team of ${teamSize} is spending $${totalMonthly}/month on AI tools. Our audit found ${numTools} tools in use, with a potential saving of $${totalSavings}/month ($${totalAnnualSavings}/year). The biggest opportunity is ${topRecommendation}. Review the breakdown below and consider switching to more cost-efficient alternatives.`;
     
     return NextResponse.json({ summary: fallback });
   }
