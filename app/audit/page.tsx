@@ -46,6 +46,7 @@ type FormData = z.infer<typeof formSchema>;
 export default function AuditPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const formMethods = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -72,6 +73,7 @@ export default function AuditPage() {
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
+    setErrorMsg(null);
     try {
       const res = await fetch("/api/audit", {
         method: "POST",
@@ -82,11 +84,13 @@ export default function AuditPage() {
       if (json.auditId) {
         router.push(`/audit/${json.auditId}`);
       } else {
-        console.error("No auditId returned");
+        console.error("No auditId returned", json);
+        setErrorMsg(json.error || "System error: Could not save the audit. Check backend logs.");
         setIsSubmitting(false);
       }
     } catch (err) {
       console.error(err);
+      setErrorMsg("Failed to connect to the server.");
       setIsSubmitting(false);
     }
   };
@@ -217,8 +221,9 @@ export default function AuditPage() {
 
             <Separator />
 
-            <div className="flex justify-end">
-              <Button type="submit" size="lg" className="w-full md:w-auto" disabled={isSubmitting}>
+                <div className="pt-6 border-t flex flex-col items-start gap-4">
+                  {errorMsg && <p className="text-red-500 font-medium text-sm">{errorMsg}</p>}
+                  <Button type="submit" size="lg" disabled={isSubmitting} className="w-full sm:w-auto text-lg py-6 shadow-xl">
                 {isSubmitting ? "Analyzing..." : "Calculate Potential Savings"}
               </Button>
             </div>
